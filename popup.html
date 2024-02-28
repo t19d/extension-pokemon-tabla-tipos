@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<title>Tabla de Tipos Pokémon</title>
+		<link rel="stylesheet" type="text/css" href="styles.css" />
+	</head>
+	<body>
+		<main>
+			<header>
+				<label for="searchInput">Tipo</label>
+				<input
+					type="text"
+					id="searchInput"
+					list="datalist-types"
+					placeholder="Buscar tipo..."
+				/>
+				<datalist id="datalist-types"></datalist>
+				<button id="searchButton">Buscar</button>
+			</header>
+
+			<div class="damage">
+				<ul id="from"></ul>
+				<ul id="to"></ul>
+			</div>
+		</main>
+
+		<script defer src="popup.js"></script>
+	</body>
+</html>
