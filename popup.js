@@ -12,7 +12,9 @@ async function searchTypes() {
 	await fetch("https://pokeapi.co/api/v2/type/")
 		.then((response) => response.json())
 		.then(({ results }) => {
-			searchedTypes = results;
+			searchedTypes = results.filter(
+				(t) => t.name !== "unknown" && t.name !== "shadow"
+			);
 		})
 		.catch((error) => console.error("Error fetching types:", error));
 
@@ -132,6 +134,11 @@ function updateDamageList() {
 
 async function handleCheckboxChange(event) {
 	const type = event.target.value;
+
+	if (Object.keys(selectedTypes).length >= 2 && !selectedTypes[type]) {
+		event.target.checked = false;
+		return;
+	}
 
 	if (event.target.checked) {
 		const damage = await searchDamage(type);
