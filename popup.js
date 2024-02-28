@@ -98,23 +98,34 @@ function updateDamageList() {
 	damageToList.innerHTML = "";
 
 	const damages = Object.values(selectedTypes);
-
 	const totalDamage = calculateDamage(damages);
 
 	const { from, to } = totalDamage;
 	Object.entries(from).forEach(([key, value]) => {
 		const li = document.createElement("li");
-		li.textContent = `${key}x damage from: ${value
-			.map((t) => t.name)
-			.join(", ")}`;
+		li.className = `_${key.replace(".", "_")}`;
+		let innerHTML = `<h3>x${key}</h3>`;
+		innerHTML += "<div>";
+		value.forEach((t) => {
+			innerHTML += `<span class="bg-type bg-color-${t.name}">${t.name}</span>`;
+		});
+		innerHTML += "</div>";
+		li.innerHTML = innerHTML;
+
 		damageFromList.appendChild(li);
 	});
 
 	Object.entries(to).forEach(([key, value]) => {
 		const li = document.createElement("li");
-		li.textContent = `${key}x damage to: ${value
-			.map((t) => t.name)
-			.join(", ")}`;
+		li.className = `_${key.replace(".", "_")}`;
+		let innerHTML = `<h3>x${key}</h3>`;
+		innerHTML += "<div>";
+		value.forEach((t) => {
+			innerHTML += `<span class="bg-type bg-color-${t.name}">${t.name}</span>`;
+		});
+		innerHTML += "</div>";
+		li.innerHTML = innerHTML;
+
 		damageToList.appendChild(li);
 	});
 }
