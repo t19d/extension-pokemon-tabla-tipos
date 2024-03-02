@@ -1,10 +1,9 @@
 {
 	"manifest_version": 3,
-	"name": "Tabla de Tipos Pokémon",
-    "version": "1.0.0",
-	"description": "Una extensión que proporciona una tabla de tipos Pokémon.",
-    "author": "David Tojo",
-	"permissions": ["activeTab"],
+	"name": "Pokemon type chart",
+	"version": "1.0.0",
+	"description": "An extension that provides a Pokemon type chart.",
+	"author": "David Tojo",
 	"action": {
 		"default_popup": "popup.html",
 		"default_icon": {
@@ -17,6 +16,5 @@
 		"16": "icon.png",
 		"48": "icon.png",
 		"128": "icon.png"
-	},
-	"host_permissions": ["https://pokeapi.co/api/v2/*"]
+	}
 }
