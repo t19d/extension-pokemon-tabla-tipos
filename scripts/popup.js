@@ -1,4 +1,5 @@
 import types from "./pokemon-types/types.js";
+import typesDamages from "./pokemon-types/types-damages.js";
 const selectedTypes = {};
 
 document.addEventListener("DOMContentLoaded", async function () {
@@ -6,15 +7,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 async function searchDamage(type) {
-	let damage;
-	await fetch(`https://pokeapi.co/api/v2/type/${type}`)
-		.then((response) => response.json())
-		.then(({ damage_relations }) => {
-			damage = refineDamageData(damage_relations);
-		})
-		.catch((error) => console.error("Error fetching types:", error));
-
-	return damage;
+	return typesDamages[type];
 }
 
 function updateListCheckbox() {
@@ -31,50 +24,6 @@ function updateListCheckbox() {
 
 		listTypesCheckbox.appendChild(li);
 	});
-}
-
-function refineDamageData(damage_relations) {
-	// x1DamageTo son todos los tipos que no aparecen en damage_relations.double_damage_to, damage_relations.half_damage_to ni en damage_relations.no_damage_to.
-	const x1DamageTo = types.filter(
-		(type) =>
-			!damage_relations.double_damage_to.some(
-				(t) => t.name === type.name
-			) &&
-			!damage_relations.half_damage_to.some(
-				(t) => t.name === type.name
-			) &&
-			!damage_relations.no_damage_to.some((t) => t.name === type.name)
-	);
-	const damageTo = {
-		2: damage_relations.double_damage_to,
-		1: x1DamageTo,
-		0.5: damage_relations.half_damage_to,
-		0: damage_relations.no_damage_to,
-	};
-
-	// x1DamageFrom son todos los tipos que no aparecen en damage_relations.double_damage_from, damage_relations.half_damage_from ni en damage_relations.no_damage_from.
-	const x1DamageFrom = types.filter(
-		(type) =>
-			!damage_relations.double_damage_from.some(
-				(t) => t.name === type.name
-			) &&
-			!damage_relations.half_damage_from.some(
-				(t) => t.name === type.name
-			) &&
-			!damage_relations.no_damage_from.some((t) => t.name === type.name)
-	);
-
-	const damageFrom = {
-		2: damage_relations.double_damage_from,
-		1: x1DamageFrom,
-		0.5: damage_relations.half_damage_from,
-		0: damage_relations.no_damage_from,
-	};
-
-	return {
-		to: damageTo,
-		from: damageFrom,
-	};
 }
 
 function updateDamageList() {
