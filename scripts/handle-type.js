@@ -16,7 +16,22 @@ async function handleCheckboxChange(event) {
 		delete selectedTypes[type];
 	}
 
-	updateDamageList();
+	if (Object.keys(selectedTypes).length === 0) {
+		hideDamageList();
+	} else {
+		showDamageList();
+		updateDamageList();
+	}
+}
+
+function hideDamageList() {
+	const damageFromContainer = document.getElementsByClassName("damage");
+	damageFromContainer[0].style.display = "none";
+}
+
+function showDamageList() {
+	const damageFromContainer = document.getElementsByClassName("damage");
+	damageFromContainer[0].style.display = "flex";
 }
 
 function updateDamageList() {
@@ -32,6 +47,7 @@ function updateDamageList() {
 		const damageFromList = document.createElement("ul");
 		damageFromContainer.appendChild(damageFromList);
 		Object.entries(from[type]).forEach(([key, value]) => {
+			if (!value || value.length === 0) return;
 			const li = document.createElement("li");
 			li.className = `_${key.replace(".", "_")}`;
 			let innerHTML = `<h3>x${key}</h3>`;
@@ -58,6 +74,7 @@ function updateDamageList() {
 		typeContainer.appendChild(damageToList);
 
 		Object.entries(to[type]).forEach(([key, value]) => {
+			if (!value || value.length === 0) return;
 			const li = document.createElement("li");
 			li.className = `_${key.replace(".", "_")}`;
 			let innerHTML = `<h3>x${key}</h3>`;
