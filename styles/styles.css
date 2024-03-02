@@ -8,8 +8,34 @@
 
 :root {
 	--color-dark: #212121;
-	--color-purple: #8a2be2;
-	--color-purple-light: #e8d4f9;
+	--color-gray: #999999; /* Gray */
+	--color-gray-light: #dddddd; /* Light gray */
+	--color-primary: #8a2be2; /* Purple */
+	--color-primary-light: #e8d4f9; /* Light purple */
+	--color-yellow: #ffd700; /* Yellow */
+	--color-red: #ff4500; /* Red */
+	--color-blue: #4682b4; /* Blue */
+
+	--width-scrollbar-radius: 10px;
+	--border-scrollbar-radius: 4px;
+	--color-scrollbar: var(--color-primary);
+	--bg-color-scrollbar: var(--color-primary-light);
+}
+
+body::-webkit-scrollbar {
+	width: var(--width-scrollbar-radius);
+	border-radius: var(--border-scrollbar-radius);
+}
+
+body::-webkit-scrollbar-track {
+	background: var(--bg-color-scrollbar);
+	border-radius: var(--border-scrollbar-radius);
+}
+
+body::-webkit-scrollbar-thumb {
+	background-color: var(--color-scrollbar);
+	border-radius: var(--border-scrollbar-radius);
+	outline: 1px solid var(--color-scrollbar);
 }
 
 body {
@@ -54,17 +80,17 @@ body {
 
 					label {
 						padding: 0.5rem 1rem;
-						border: 1px solid var(--color-purple);
+						border: 1px solid var(--color-primary);
 						border-radius: 8px;
 						cursor: pointer;
 						transition: all 0.3s;
 
 						&:hover {
-							background-color: var(--color-purple-light);
+							background-color: var(--color-primary-light);
 						}
 
 						&:has(input:checked) {
-							background-color: var(--color-purple);
+							background-color: var(--color-primary);
 							color: white;
 						}
 					}
@@ -80,7 +106,7 @@ body {
 			display: flex;
 			flex-direction: column;
 			gap: 1rem;
-			border-top: 1px solid var(--color-purple-light);
+			border-top: 1px solid var(--color-primary-light);
 			padding-top: 1rem;
 
 			> div {
