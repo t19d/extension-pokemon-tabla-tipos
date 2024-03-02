@@ -94,42 +94,54 @@ function refineDamageData(damage_relations) {
 }
 
 function updateDamageList() {
-	const damageFromList = document.getElementById("from");
-	const damageToList = document.getElementById("to");
-	damageFromList.innerHTML = "";
-	damageToList.innerHTML = "";
+	const damageFromContainer = document.getElementById("from");
+	damageFromContainer.innerHTML = "";
+	const damageToContainer = document.getElementById("to");
+	damageToContainer.innerHTML = "";
 
-	const damages = Object.values(selectedTypes);
-	const totalDamage = calculateDamage(damages);
-
+	const totalDamage = calculateDamage();
 	const { from, to } = totalDamage;
-	Object.entries(from).forEach(([key, value]) => {
-		const li = document.createElement("li");
-		li.className = `_${key.replace(".", "_")}`;
-		let innerHTML = `<h3>x${key}</h3>`;
-		innerHTML += "<div>";
-		value.forEach((t) => {
-			innerHTML += `<span class="bg-type bg-color-${t.name}">${t.name}</span>`;
+
+	for (const type in from) {
+		const damageFromList = document.createElement("ul");
+		damageFromContainer.appendChild(damageFromList);
+		Object.entries(from[type]).forEach(([key, value]) => {
+			const li = document.createElement("li");
+			li.className = `_${key.replace(".", "_")}`;
+			let innerHTML = `<h3>x${key}</h3>`;
+			innerHTML += "<div>";
+			value.forEach((t) => {
+				innerHTML += `<span class="bg-type bg-color-${t.name}">${t.name}</span>`;
+			});
+			innerHTML += "</div>";
+			li.innerHTML = innerHTML;
+
+			damageFromList.appendChild(li);
 		});
-		innerHTML += "</div>";
-		li.innerHTML = innerHTML;
+	}
 
-		damageFromList.appendChild(li);
-	});
+	for (const type in to) {
+		const titleList = document.createElement("h3");
+		titleList.innerText = `${type}`;
+		titleList.className = `bg-type bg-color-${type}`;
+		damageToContainer.appendChild(titleList);
+		const damageToList = document.createElement("ul");
+		damageToContainer.appendChild(damageToList);
 
-	Object.entries(to).forEach(([key, value]) => {
-		const li = document.createElement("li");
-		li.className = `_${key.replace(".", "_")}`;
-		let innerHTML = `<h3>x${key}</h3>`;
-		innerHTML += "<div>";
-		value.forEach((t) => {
-			innerHTML += `<span class="bg-type bg-color-${t.name}">${t.name}</span>`;
+		Object.entries(to[type]).forEach(([key, value]) => {
+			const li = document.createElement("li");
+			li.className = `_${key.replace(".", "_")}`;
+			let innerHTML = `<h3>x${key}</h3>`;
+			innerHTML += "<div>";
+			value.forEach((t) => {
+				innerHTML += `<span class="bg-type bg-color-${t.name}">${t.name}</span>`;
+			});
+			innerHTML += "</div>";
+			li.innerHTML = innerHTML;
+
+			damageToList.appendChild(li);
 		});
-		innerHTML += "</div>";
-		li.innerHTML = innerHTML;
-
-		damageToList.appendChild(li);
-	});
+	}
 }
 
 async function handleCheckboxChange(event) {
@@ -150,19 +162,12 @@ async function handleCheckboxChange(event) {
 	updateDamageList();
 }
 
-function calculateDamage(damages) {
+function calculateDamage() {
+	const damages = Object.values(selectedTypes);
 	const totalDamage = {
-		to: {},
 		from: {},
+		to: {},
 	};
-
-	// damage.to
-	let initialX0DamageTo = [];
-	let x0_25DamageTo = [];
-	let initialX0_5DamageTo = [];
-	let initialX1DamageTo = [];
-	let initialX2DamageTo = [];
-	let x4DamageTo = [];
 
 	// damage.from
 	let initialX0DamageFrom = [];
@@ -174,17 +179,6 @@ function calculateDamage(damages) {
 
 	// #region data in arrays
 	damages.forEach((damage) => {
-		Object.entries(damage.to).forEach(([key, value]) => {
-			if (key === "0") {
-				initialX0DamageTo.push(...value);
-			} else if (key === "0.5") {
-				initialX0_5DamageTo.push(...value);
-			} else if (key === "1") {
-				initialX1DamageTo.push(...value);
-			} else if (key === "2") {
-				initialX2DamageTo.push(...value);
-			}
-		});
 		Object.entries(damage.from).forEach(([key, value]) => {
 			if (key === "0") {
 				initialX0DamageFrom.push(...value);
@@ -200,19 +194,11 @@ function calculateDamage(damages) {
 	// #endregion
 
 	// Delete duplicates of objects, take the first one
-	let x0DamageTo = removeTypesDuplicates([...initialX0DamageTo]);
-	let x1DamageTo = removeTypesDuplicates([...initialX1DamageTo]);
 	let x0DamageFrom = removeTypesDuplicates([...initialX0DamageFrom]);
 	let x1DamageFrom = removeTypesDuplicates([...initialX1DamageFrom]);
 
 	// #region x0_25
 	// If any type is duplicated in x0_5DamageXX, add to x0_25DamageXX
-	x0_25DamageTo = getTypesDuplicates([...initialX0_5DamageTo]);
-	let x0_5DamageTo = removeTypesDuplicates([...initialX0_5DamageTo]);
-	x0_5DamageTo = x0_5DamageTo.filter((type) => {
-		return !x0_25DamageTo.some((t) => type.name === t.name);
-	});
-
 	x0_25DamageFrom = getTypesDuplicates([...initialX0_5DamageFrom]);
 	let x0_5DamageFrom = removeTypesDuplicates([...initialX0_5DamageFrom]);
 	x0_5DamageFrom = x0_5DamageFrom.filter((type) => {
@@ -222,12 +208,6 @@ function calculateDamage(damages) {
 
 	// #region x4
 	// If any type is duplicated in x2DamageXX, add to x4DamageXX
-	x4DamageTo = getTypesDuplicates([...initialX2DamageTo]);
-	let x2DamageTo = removeTypesDuplicates([...initialX2DamageTo]);
-	x2DamageTo = x2DamageTo.filter((type) => {
-		return !x4DamageTo.some((t) => type.name === t.name);
-	});
-
 	x4DamageFrom = getTypesDuplicates([...initialX2DamageFrom]);
 	let x2DamageFrom = removeTypesDuplicates([...initialX2DamageFrom]);
 	x2DamageFrom = x2DamageFrom.filter((type) => {
@@ -237,16 +217,6 @@ function calculateDamage(damages) {
 
 	// #region x0
 	// If any type is in x0DamageXX, remove from others arrays that type
-	// x0_5DamageTo = x0_5DamageTo.filter((type) => !x0DamageTo.includes(type));
-	x0_5DamageTo = x0_5DamageTo.filter((type) => {
-		return !x0DamageTo.some((t) => type.name === t.name);
-	});
-	x1DamageTo = x1DamageTo.filter((type) => {
-		return !x0DamageTo.some((t) => type.name === t.name);
-	});
-	x2DamageTo = x2DamageTo.filter((type) => {
-		return !x0DamageTo.some((t) => type.name === t.name);
-	});
 	x0_5DamageFrom = x0_5DamageFrom.filter((type) => {
 		return !x0DamageFrom.some((t) => type.name === t.name);
 	});
@@ -260,20 +230,6 @@ function calculateDamage(damages) {
 
 	// #region put x1 (if are in x0_5 and x2)
 	// If any type is in x0_5DamageXX and x2DamageXX, add to x1DamageXX and remove from x0_5DamageXX and x2DamageXX
-	const x1DamageToTemp = [];
-	x0_5DamageTo.forEach((type) => {
-		if (x2DamageTo.some((t) => type.name === t.name)) {
-			x1DamageToTemp.push(type);
-		}
-	});
-	x0_5DamageTo = x0_5DamageTo.filter(
-		(type) => !x1DamageToTemp.some((t) => type.name === t.name)
-	);
-	x2DamageTo = x2DamageTo.filter(
-		(type) => !x1DamageToTemp.some((t) => type.name === t.name)
-	);
-	x1DamageTo = [...new Set([...x1DamageTo, ...x1DamageToTemp])];
-
 	const x1DamageFromTemp = [];
 	x0_5DamageFrom.forEach((type) => {
 		if (x2DamageFrom.some((t) => type.name === t.name)) {
@@ -291,11 +247,6 @@ function calculateDamage(damages) {
 
 	// #region remove x1 if duplicate in x2 or x0_5
 	// If any type is in (x0_5DamageXX or x2DamageXX) and x1DamageXX, remove from x1DamageXX
-	x1DamageTo = x1DamageTo.filter(
-		(type) =>
-			!x0_5DamageTo.some((t) => type.name === t.name) &&
-			!x2DamageTo.some((t) => type.name === t.name)
-	);
 	x1DamageFrom = x1DamageFrom.filter(
 		(type) =>
 			!x0_5DamageFrom.some((t) => type.name === t.name) &&
@@ -303,16 +254,7 @@ function calculateDamage(damages) {
 	);
 	// #endregion
 
-	totalDamage.to = {
-		4: x4DamageTo,
-		2: x2DamageTo,
-		1: x1DamageTo,
-		0.5: x0_5DamageTo,
-		0.25: x0_25DamageTo,
-		0: x0DamageTo,
-	};
-
-	totalDamage.from = {
+	totalDamage.from.total = {
 		4: x4DamageFrom,
 		2: x2DamageFrom,
 		1: x1DamageFrom,
@@ -320,6 +262,10 @@ function calculateDamage(damages) {
 		0.25: x0_25DamageFrom,
 		0: x0DamageFrom,
 	};
+
+	for (const type in selectedTypes) {
+		totalDamage.to[type] = selectedTypes[type].to;
+	}
 
 	return totalDamage;
 }
