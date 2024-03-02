@@ -1,25 +1,9 @@
-const types = [];
+import types from "./pokemon-types/types.js";
 const selectedTypes = {};
 
 document.addEventListener("DOMContentLoaded", async function () {
-	const searchedTypes = await searchTypes();
-	types.push(...searchedTypes);
 	updateListCheckbox();
 });
-
-async function searchTypes() {
-	let searchedTypes = [];
-	await fetch("https://pokeapi.co/api/v2/type/")
-		.then((response) => response.json())
-		.then(({ results }) => {
-			searchedTypes = results.filter(
-				(t) => t.name !== "unknown" && t.name !== "shadow"
-			);
-		})
-		.catch((error) => console.error("Error fetching types:", error));
-
-	return searchedTypes;
-}
 
 async function searchDamage(type) {
 	let damage;
