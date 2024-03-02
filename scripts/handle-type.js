@@ -47,12 +47,15 @@ function updateDamageList() {
 	}
 
 	for (const type in to) {
+		const typeContainer = document.createElement("div");
+		typeContainer.className = "type-container";
+		damageToContainer.appendChild(typeContainer);
 		const titleList = document.createElement("h3");
 		titleList.innerText = `${type}`;
 		titleList.className = `bg-type bg-color-${type}`;
-		damageToContainer.appendChild(titleList);
+		typeContainer.appendChild(titleList);
 		const damageToList = document.createElement("ul");
-		damageToContainer.appendChild(damageToList);
+		typeContainer.appendChild(damageToList);
 
 		Object.entries(to[type]).forEach(([key, value]) => {
 			const li = document.createElement("li");
